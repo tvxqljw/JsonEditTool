@@ -1,0 +1,482 @@
+<!DOCTYPE>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>配置文档Json编辑工具</title>
+    <link rel="stylesheet" href="../jquery.treeview.css"/>
+    <link rel="stylesheet" href="screen.css"/>
+    <script src="../lib/jquery.js" type="text/javascript"></script>
+    <script src="../lib/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../jquery.treeview.js" type="text/javascript"></script>
+    <script src="../jquery.treeview.edit.js" type="text/javascript"></script>
+
+</head>
+<style type="text/css">
+    html, body {
+        background: url("../images/back.png") repeat ;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: arial, verdana, sans-serif;
+    }
+
+    .wrap {
+        width: 100%;
+        height: 100%;
+    }
+
+    .fixed {
+        float: left;
+        width: 200px;
+        height: 100%;
+        margin-left: -100%;
+        padding: 10px;
+    }
+
+    .main {
+        float: left;
+        width: 100%;
+        height: 100%;
+    }
+
+    .main-inner {
+        margin-left: 200px;
+        height: 100%;
+        padding: 10px;
+        border-left: 1px #ccc solid;
+    }
+
+    .chosed {
+        color: red;
+        font-weight: bold;
+    }
+
+    #tree a:hover {
+        font-weight: bold;
+    }
+
+    #treeDiv {
+        border: 1px #ccc dotted;
+        padding: 50px;
+        width: 44%;
+        float: left;
+    }
+
+    #tree{
+        background-color: #fff;
+        padding: 20px;
+        font-size: 16px;
+    }
+
+    #tree a{
+        color: #0066bb;
+        font-style: italic;
+    }
+
+    #tree span{
+        color: #000;
+        font-style: normal;
+    }
+
+    #resultDiv {
+        border: 1px #ccc dotted;
+        padding: 50px;
+        width: 40%;
+        float: right;
+    }
+
+    #editDiv{
+        position: fixed;
+        overflow: hidden;
+    }
+
+    #editDiv button{
+        width: 170px;
+        float: left;
+
+    }
+
+    #treeJson{
+        border: 1px #ccc solid;
+        width: 100%;
+        min-height: 500px;
+        color: #2C3E50;
+        padding: 20px;
+        outline: 0;
+        font-size: 16px;
+
+    }
+
+    #getJson,#addNode,#removeNode,
+    #editNode,#addFirstNodeButton{
+        margin-bottom:10px;
+        color: #fff;
+        font-weight: bold;
+        border: 0;
+        outline: 0;
+        padding: 10px 19px;
+        font-size: 16px;
+        line-height: 1.471;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    #getJson{
+        background-color: #34495E;
+    }
+
+    #addNode{
+        background-color: #1ABC9C;
+    }
+
+    #removeNode{
+        background-color: #E74C3C;
+    }
+
+    #editNode{
+        background-color: #F1C40F;
+    }
+
+    #addFirstNodeButton{
+        background-color: #3498DB;
+    }
+
+</style>
+<body>
+<div class="wrap">
+    <div class="main">
+        <div class="main-inner">
+            <div id="treeDiv">
+                <h1>编辑窗口</h1>
+                <button id="addFirstNodeButton">+</button>
+                <ul id="tree">
+                </ul>
+            </div>
+
+
+            <div id="resultDiv">
+                <h1>代码输出</h1>
+                <button id="getJson">获取json</button><br>
+                <textarea id="treeJson"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="fixed">
+        <div id="editDiv">
+            <h1>编辑工具</h1>
+            <button id="addNode">添加节点</button><br>
+            <button id="removeNode">删除节点</button><br>
+            <button id="editNode">修改内容</button>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+$(function () {
+    init();
+    $("#editDiv").css("display", "none");
+    $("#tree").css("display", "none");
+    var chooingNode;//正被选中的节点
+    //获取json
+    var initialJson = '';
+    var currNode;
+    $("#getJson").bind("click", function () {
+        $("#tree").find("li").each(function () {
+            if ($(this).html() == "") {
+                $(this).remove();
+            }
+        });//去掉空li
+        initialJson += '{';
+        $("#tree > li").each(function (i) {
+            currNode = $(this);
+            getChildNode(currNode);
+        });
+        initialJson += '}';
+        //打印json
+        $("#treeJson").html(initialJson);
+        initialJson = '';//清空
+    });
+
+
+    /***
+     * Change into nodes functions
+     */
+    function getChildNode(currNode) {
+        console.log("currNode = " + currNode.find("a").attr("title"));
+        if (currNode.children().is("ul")) {
+            // currNode = $(this).children("ul");
+            if (currNode.children("ul").find(">li").find("a").attr("title") == "file") {
+                initialJson += '"' + currNode.children("ul").parent("li").find("a").attr("title") + '":';
+                initialJson += "[";
+                currNode.children("ul").find(">li").each(function () {
+                    getChildNode($(this));
+                });
+                initialJson += "]";
+            }
+            else {
+                //不是file
+                if (currNode.children("ul").parent("li").find("a").attr("title") != "file") {
+                    initialJson += '"' + currNode.children("ul").parent("li").find("a").attr("title") + '":';
+                }
+                initialJson += "{";
+                currNode.children("ul").find(">li").each(function () {
+                    getChildNode($(this));
+                });
+                initialJson += "},";
+            }
+        }
+        else {
+            //叶子节点
+            initialJson += '"' + currNode.find("a").attr("title") + '":' + '"' + currNode.find("a").find("span").text() + '",';
+        }
+    }
+
+
+
+
+    /***
+     * remove nodes functions
+     */
+    $("#removeNode").bind("click", function () {
+        if (chooingNode == null) {
+            alert("请选择一个节点！");
+        }
+        else {
+
+            var r = confirm("你确定删除节点" + chooingNode.attr("title") + " : " + chooingNode.text() + " 吗?");
+            if (r == true) {
+                console.log("chooingNode：" + chooingNode);
+                if (chooingNode.parent("li").parent("ul").children().length > 1) {
+                    $("#tree").treeview({
+                        remove: chooingNode.parent("li").filter(":first")
+                    });
+                }
+                else {
+                    alert("这个节点的父节点" + chooingNode.parent("li").parent("ul").parent("li").children("a").attr("title") + "不能没有一个节点");
+                }
+                chooingNode = null;
+            }
+        }
+    });
+
+
+    /***
+     * add nodes functions
+     */
+
+    $("a").live("click", function () {
+        console.log('you have chosed node called "' + $(this).attr("title") + '"');
+        $("a").removeClass("chosed");
+        $(this).addClass("chosed");
+
+        chooingNode = $(this);
+        console.log("chooingNode：" + chooingNode);
+    });
+
+    $("#addNode").bind("click", function () {
+        if (chooingNode == null) {
+            alert("请选择一个节点！");
+        }
+        else {
+            // add new file into the first node named 'links'
+            if (chooingNode.attr("name") == "level0") {
+                var newNode = '';//重新定义newNode
+                newNode += '<li>' +
+                        '<a name="level01" title="file">file</a>';
+                newNode += '<ul>';
+                newNode += '<li><a data="leaf" title="type">type:<span>type</span></a><li>';
+                newNode += '<li><a data="leaf" title="value">value:<span>value</span></a><li>';
+                newNode += '<li>' +
+                        '<a title="items">items:</a>';
+                newNode += '<ul></ul></li>';
+                newNode += '<li>' +
+                        '<a name="level1" title="links">links:</a>';
+                newNode += '<ul></ul></li>';
+                newNode += '</ul>';
+                newNode += '</li>';
+
+                var nodeObj = $(newNode);
+                var thebranches = $(nodeObj).appendTo(chooingNode.parent("li").children("ul"));
+                $("#tree").treeview({
+                    add: thebranches
+                });
+            }
+
+            //add new file into the second node named 'links'
+            else if (chooingNode.attr("name") == "level1") {
+                var newNode = '';//重新定义newNode
+                newNode += '<li>' +
+                        '<a name="level01" title="file">file</a>';
+                newNode += '<ul>';
+                newNode += '<li><a data="leaf" title="type">type:<span>type</span></a><li>';
+                newNode += '<li>' +
+                        '<a title="value">value:</a>';
+                newNode += '<ul>';
+                newNode += '<li><a data="leaf" title="allow">allow:<span>allow</span></a></li>';
+                newNode += '</ul></li>';
+                newNode += '<li>' +
+                        '<a name="level2" title="items">items:</a>';
+                newNode += '<ul></ul></li>';
+                newNode += '</ul>';
+                newNode += '</li>';
+
+                var nodeObj = $(newNode);
+                var thebranches = $(nodeObj).appendTo(chooingNode.parent("li").children("ul"));
+                $("#tree").treeview({
+                    add: thebranches
+                });
+            }
+
+            //add new file into the second node named 'items'
+            else if (chooingNode.attr("name") == "level2") {
+                var newNode = '';//重新定义newNode
+                newNode += '<li>' +
+                        '<a name="level01" title="file">file</a>';
+                newNode += '<ul>';
+                newNode += '<li><a title="_item_method" data="leaf">_item_method:<span>_item_method</span></a></li>';
+                newNode += '<li>' +
+                        '<a title="description">description:</a>' +
+                        '<ul>' +
+                        '<li><a title="extractor" data="leaf">extractor:<span>extractor</span></a></li>' +
+                        '<li><a title="value" data="leaf">value:<span>value</span></a></li>' +
+                        '</ul>';
+                newNode += '</li>';
+                newNode += '<li>' +
+                        '<a title="title">title:</a>' +
+                        '<ul>' +
+                        '<li><a title="extractor" data="leaf">extractor:<span>extractor</span></a></li>' +
+                        '<li><a title="value" data="leaf">value:<span>value</span></a></li>' +
+                        '</ul>';
+                newNode += '</li>';
+                newNode += '<li>' +
+                        '<a title="text">text:</a>' +
+                        '<ul>' +
+                        '<li><a title="extractor" data="leaf">extractor:<span>extractor</span></a></li>' +
+                        '<li><a title="value" data="leaf">value:<span>value</span></a></li>' +
+                        '</ul>';
+                newNode += '</li>';
+                newNode += '<li>' +
+                        '<a title="source">source:</a>' +
+                        '<ul>' +
+                        '<li><a title="extractor" data="leaf">extractor:<span>extractor</span></a></li>' +
+                        '<li><a title="value" data="leaf">value:<span>value</span></a></li>' +
+                        '</ul>';
+                newNode += '</li>';
+                newNode += '<li>' +
+                        '<a title="time">time:</a>' +
+                        '<ul>' +
+                        '<li><a title="extractor" data="leaf">extractor:<span>extractor</span></a></li>' +
+                        '<li><a title="value" data="leaf">value:<span>value</span></a></li>' +
+                        '<li><a title="format" data="leaf"><span>format</span></li>' +
+                        '</ul>';
+                newNode += '</li>';
+                newNode += '<li>' +
+                        '<a title="keywords">keywords:</a>' +
+                        '<ul>' +
+                        '<li><a title="extractor" data="leaf">extractor:<span>extractor</span></a></li>' +
+                        '<li><a title="value" data="leaf">value:<span>value</span></a></li>' +
+                        '</ul>';
+                newNode += '</li>';
+                newNode += '</ul>';
+                newNode += '</li>';
+
+                var nodeObj = $(newNode);
+                var thebranches = $(nodeObj).appendTo(chooingNode.parent("li").children("ul"));
+                $("#tree").treeview({
+                    add: thebranches
+                });
+            }
+
+            //if the leaf node has been clicked
+            else {
+                alert("此节点无法添加子节点！");
+            }
+        }
+    });
+
+    /***
+     * addFirstNodeButton clicked event
+     */
+    $("#addFirstNodeButton").bind("click", function () {
+        var newNode = '<li><a data="leaf" title="name">name:<span>name<span></a></li>';
+        newNode += '<li>' +
+                '<a name="level0" title="links">links:</a>';
+        newNode += '<ul>';
+        newNode += '<li>' +
+                '<a name="level01" title="file">+</a>';//第一个“ ”
+        newNode += '<ul>';
+        newNode += '<li><a data="leaf" title="type">type:<span>type</span></a><li>';
+        newNode += '<li><a data="leaf" title="value">value:<span>value</span></a><li>';
+        newNode += '<li>' +
+                '<a title="items">items:</a>';
+        newNode += '<ul></ul></li>';
+
+        newNode += '<li>' +
+                '<a name="level1" title="links">links:</a>';
+        newNode += '<ul></ul></li>';
+        newNode += '</ul>';
+        newNode += '</li>';
+        newNode += '</ul>';
+        newNode += '</li>';
+
+        var nodeObj = $(newNode);
+        var thebranches = $(nodeObj).appendTo("#tree");
+        $("#tree").treeview({
+            add: thebranches
+        });
+        $("#addFirstNodeButton").hide("fast");
+        $("#tree").show("fast");
+        $("#editDiv").show("fast");
+    });
+
+    /***
+     * [Rename] this function only applied for leaf nodes
+     */
+
+    $("#editNode").live("click", function () {
+        if (chooingNode == null) {
+            alert("请选择一个节点！");
+        }
+        else {
+            console.log(chooingNode.children("span").text());
+            if (chooingNode.attr("data") == "leaf") {
+                var newName = prompt("请修改" + chooingNode.attr("title") + "的内容", chooingNode.children("span").text());
+                if (newName != null && newName != "") {
+                    chooingNode.children("span").text(newName);
+                }
+                else {
+                    alert("不能为空！");
+                }
+            }
+            else {
+                alert("这个节点无法重命名！");
+            }
+        }
+    });
+
+
+
+
+});
+
+
+
+function init() {
+    //加载树功能
+    $("#tree").treeview({
+        collapsed: true,
+        animated: "medium",
+        control: "#sidetreecontrol",
+        persist: "location"
+
+    });
+    // $("ul").css("display", "block");
+    $("a").removeClass("selected");
+}
+</script>
+
+</body>
+</html>

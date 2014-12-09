@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../jquery.treeview.css"/>
+    <link rel="stylesheet" href="screen.css"/>
+    <script src="../lib/jquery.js" type="text/javascript"></script>
+    <script src="../lib/jquery.cookie.js" type="text/javascript"></script>
+    <script src="../jquery.treeview.js" type="text/javascript"></script>
+    <script src="../jquery.treeview.edit.js" type="text/javascript"></script>
+    <title>配置文档Json编辑工具</title>
+    <style type="text/css">
+        html, body {
+            background: url("../images/back.png") repeat ;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: arial, verdana, sans-serif;
+        }
+
+        .wrap {
+            width: 100%;
+            height: 100%;
+        }
+
+        .fixed {
+            float: left;
+            width: 200px;
+            height: 100%;
+            margin-left: -100%;
+            padding: 10px;
+        }
+
+        .main {
+            float: left;
+            width: 100%;
+            height: 100%;
+        }
+
+        .main-inner {
+            margin-left: 200px;
+            height: 100%;
+            padding: 10px;
+            border-left: 1px #ccc solid;
+        }
+
+        .chosed {
+            color: red;
+            font-weight: bold;
+        }
+
+        #tree a:hover {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #treeDiv {
+            border: 1px #ccc dotted;
+            padding: 50px;
+            width: 44%;
+            float: left;
+        }
+
+        #tree{
+            background-color: #fff;
+            padding: 20px;
+            font-size: 16px;
+        }
+
+        #tree a{
+            color: #0066bb;
+            font-style: italic;
+        }
+
+        #tree span{
+            color: #000;
+            font-style: normal;
+        }
+
+        #resultDiv {
+            border: 1px #ccc dotted;
+            padding: 50px;
+            width: 40%;
+            float: right;
+        }
+
+        #editDiv{
+            width: 170px;
+            position: fixed;
+            overflow: hidden;
+        }
+
+        #editDiv button{
+            width: 170px;
+            float: left;
+        }
+
+        #treeJson{
+            border: 1px #ccc solid;
+            width: 100%;
+            min-height: 500px;
+            color: #2C3E50;
+            padding: 20px;
+            outline: 0;
+            font-size: 16px;
+
+        }
+
+        #getJson,#addChildNode,#addParentNode,#removeNode,
+        #editNode,#addFirstNodeButton{
+            margin-bottom:10px;
+            color: #fff;
+            font-weight: bold;
+            border: 0;
+            outline: 0;
+            padding: 10px 19px;
+            font-size: 16px;
+            line-height: 1.471;
+            border-radius: 6px;
+            cursor: pointer;
+            /*渐变颜色*/
+            -webkit-transition: background-color 0.2s linear;
+            -moz-transition: background-color 0.2s linear;
+            -o-transition: background-color 0.2s linear;
+            -ms-transition: background-color 0.2s linear;
+            transition: background-color 0.2s linear;
+        }
+
+
+        #getJson{
+            background-color: #34495E;
+        }
+
+        #addChildNode{
+            background-color: #2ECC71;
+        }
+
+        #addChildNode:hover{
+            background-color: #58D68D;
+        }
+
+        #addParentNode{
+            background-color: #1ABC9C;
+        }
+
+        #addParentNode:hover{
+            background-color: #48C9B0;
+        }
+
+        #removeNode{
+            background-color: #E74C3C;
+        }
+
+        #removeNode:hover{
+            background-color: #EC7063;
+        }
+
+        #editNode{
+            background-color: #F1C40F;
+        }
+
+        #editNode:hover{
+            background-color: #F5D313;
+        }
+
+        #addFirstNodeButton{
+            background-color: #3498DB;
+        }
+
+    </style>
+</head>
+
+<body>
+<div class="wrap">
+    <div class="main">
+        <div class="main-inner">
+            <div id="treeDiv">
+                <h1>编辑窗口</h1>
+                <button id="addFirstNodeButton">+</button>
+                <ul id="tree">
+                </ul>
+            </div>
+
+
+            <div id="resultDiv">
+                <h1>代码输出</h1>
+                <button id="getJson">获取json</button><br>
+                <textarea id="treeJson"></textarea>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="fixed">
+        <div id="editDiv">
+            <h1>编辑工具</h1>
+            <button id="addParentNode">添加父节点</button>
+            <button id="addChildNode">添加子节点</button><br>
+            <button id="removeNode">删除节点</button><br>
+            <button id="editNode">修改内容</button>
+        </div>
+    </div>
+
+</div>
+
+<div id="selectChoices" style="width: 100px;height: auto;float: right;bottom: 0; position: fixed"></div>
+
+
+<!--javascript-->
+<script src="functions.js"></script>
+</body>
+</html>
+
+<!-- 
+    User: lijingwen
+    web:  https://github.com/tvxqljw
+    Date: 2014-12-02 Time: 11:53
+-->

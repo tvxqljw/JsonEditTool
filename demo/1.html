@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
+    <style type="text/css">
+        *{ margin: 0; padding: 0;}
+        body{ line-height: 24px; font-size: 12px;}
+        ul{ list-style: none;}
+        ul li{ padding-left: 30px;}
+    </style>
+</head>
+<body>
+<div id="header">头部</div>
+<div id="container">
+    <h2>第一部分</h2>
+    <form action="" id="form_1">
+        <p><label>姓名：</label><input type="text" /></p>
+        <p><label>年龄：</label><input type="text" /></p>
+        <p><input type="submit" value="提交"/></p>
+    </form>
+    <form action="">
+        <p><label>手机：</label><input type="text" /></p>
+        <p><label>邮编：</label><input type="text" /></p>
+        <p><input type="submit" value="保存"/></p>
+    </form>
+</div>
+<div id="footer">脚部</div>
+<script type="text/javascript">
+    //遍历节点
+    function walkDom(el){
+        var c = el.firstChild;
+        var retObj = {};
+        var array = [];
+        while(c !== null){//这里只是返回了元素节点，没有节点就是个空数组
+            if(c.nodeType == 1){
+                array.push(walkDom(c));
+            }
+            c = c.nextSibling;
+        }
+        retObj[el.tagName] = array;
+        return retObj;
+    }
+    function createTree(tree){//构建树形
+        var array = [];
+        for(var key in tree){
+            array.push('<li><h3>');
+            array.push(key.toLowerCase());
+            array.push('</h3>');
+            if(tree[key].length != 0){
+                array.push('<ul>');
+                for(var i = 0; i < tree[key].length; i++){
+                    array = array.concat(createTree(tree[key][i]));
+                }
+                array.push('</ul>');
+            }
+            array.push('</li>');
+        }
+        return array;
+    }
+
+    var tree = walkDom(document.body);
+    var ul = document.createElement('ul');
+    ul.innerHTML = createTree(tree).join('');
+    document.body.appendChild(ul);
+</script>
+</body>
+</html>
