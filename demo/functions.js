@@ -16,168 +16,51 @@ $(function () {
         "name": "ent.163.com",
         "links": [
             {
-                "type": "url",
+                "type": "const",
                 "value": "http://ent.163.com/",
-                "items": [],
                 "links": [
                     {
                         "type": "link_extractor",
-                        "value": {
-                            "allow": "http://ent.163.com/\\d+/\\d+/\\d+/\\w+.html"
-                        },
-                        "items": [
-                            {
-                                "_item_method": "yield",
-                                "description": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"content\"]/@content"
-                                },
-                                "title": {
-                                    "extractor": "xpath",
-                                    "value": "//title/text()"
-                                },
-                                "text": {
-                                    "extractor": "xpath",
-                                    "helloObj": {
-                                        "name": "lijingwen",
-                                        "age": 22
-                                    },
-                                    "value": "//div[@id=\"endText\"]/text()"
-                                },
-                                "source": {
-                                    "extractor": "re",
-                                    "value": "╮(╯▽╰)╭"
-                                },
-                                "time": {
-                                    "extractor": "re",
-                                    "value": "...",
-                                    "format": "yyyy-MM-dd HH:mm:ss"
-                                },
-                                "keywords": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"keywords\"]/@content"
-                                }
+                        "value": {"allow": "http://ent.163.com/\\d+/\\d+/\\d+/[0-9a-zA-Z]+.html"},
+                        "items": {
+                            "description": {
+                                "type": "xpath",
+                                "value": "//meta[@name='content']/@content"
+                            },
+                            "title": {
+                                "type": "xpath",
+                                "value": "//title/text()"
+                            },
+                            "keywords": {
+                                "type": "xpath",
+                                "value": "//meta[@name='keywords']/@content"
+                            },
+                            "source": {
+                                "type": "xpath",
+                                "value": "//div[@class='ep-time-soure cDGray']/a/text()"
+                            },
+                            "time": {
+                                "type": "xpath_reg",
+                                "value": [
+                                    "//div[@class='ep-time-soure cDGray']/text()",
+                                    "(\\d+-\\d+-\\d+ \\d\\d:\\d\\d:\\d\\d)"
+                                ],
+                                "format": "timestamp"
                             }
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "url",
-                "value": "http://ent.163.com/",
-                "items": [],
-                "links": [
-                    {
-                        "type": "link_extractor",
-                        "value": {
-                            "allow": "http://ent.163.com/\\d+/\\d+/\\d+/\\w+.html"
                         },
-                        "items": [
+                        "links": [
                             {
-                                "_item_method": "yield",
-                                "description": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"content\"]/@content"
-                                },
-                                "title": {
-                                    "extractor": "xpath",
-                                    "value": "//title/text()"
-                                },
-                                "text": {
-                                    "extractor": "xpath",
-                                    "value": "//div[@id=\"endText\"]/text()"
-                                },
-                                "source": {
-                                    "extractor": "re",
-                                    "value": "╮(╯▽╰)╭"
-                                },
-                                "time": {
-                                    "extractor": "re",
-                                    "value": "...",
-                                    "format": "yyyy-MM-dd HH:mm:ss"
-                                },
-                                "keywords": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"keywords\"]/@content"
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        "type": "link_extractor",
-                        "value": {
-                            "allow": "http://ent.163.com/\\d+/\\d+/\\d+/\\w+.html"
-                        },
-                        "items": [
-                            {
-                                "_item_method": "yield",
-                                "description": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"content\"]/@content"
-                                },
-                                "title": {
-                                    "extractor": "xpath",
-                                    "value": "//title/text()"
-                                },
-                                "text": {
-                                    "extractor": "xpath",
-                                    "value": "//div[@id=\"endText\"]/text()"
-                                },
-                                "source": {
-                                    "extractor": "re",
-                                    "value": "╮(╯▽╰)╭"
-                                },
-                                "time": {
-                                    "extractor": "re",
-                                    "value": "...",
-                                    "format": "yyyy-MM-dd HH:mm:ss"
-                                },
-                                "keywords": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"keywords\"]/@content"
-                                }
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "type": "url",
-                "value": "http://ent.163.com/",
-                "items": [],
-                "links": [
-                    {
-                        "type": "link_extractor",
-                        "value": {
-                            "allow": "http://ent.163.com/\\d+/\\d+/\\d+/\\w+.html"
-                        },
-                        "items": [
-                            {
-                                "_item_method": "yield",
-                                "description": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"content\"]/@content"
-                                },
-                                "title": {
-                                    "extractor": "xpath",
-                                    "value": "//title/text()"
-                                },
-                                "text": {
-                                    "extractor": "xpath",
-                                    "value": "//div[@id=\"endText\"]/text()"
-                                },
-                                "source": {
-                                    "extractor": "re",
-                                    "value": "╮(╯▽╰)╭"
-                                },
-                                "time": {
-                                    "extractor": "re",
-                                    "value": "...",
-                                    "format": "yyyy-MM-dd HH:mm:ss"
-                                },
-                                "keywords": {
-                                    "extractor": "xpath",
-                                    "value": "//meta[@name=\"keywords\"]/@content"
+                                "type": "reg_url",
+                                "value": [
+                                    "@url",
+                                    "/(\\w+)\\.html",
+                                    "http://comment.ent.163.com/cache/newlist/ent2_bbs/{1}_1.html"
+                                ],
+                                "items": {
+                                    "comment": {
+                                        "type": "jsonp",
+                                        "value": ""
+                                    }
                                 }
                             }
                         ]
@@ -186,19 +69,7 @@ $(function () {
             }
         ]
     };
-    var testObj2 = {
-        "name": "ent.163.com",
-        "links": [
-            {
-                "type": "url",
-                "value": "http://ent.163.com/",
-                "items": [],
-                "links": []
-            }
-
-        ]
-    };
-    var CurrDObj = testObj;//当前文档
+    var CurrDObj = DocObj;//当前文档
 
 
     /***
@@ -234,10 +105,22 @@ $(function () {
             }
         });
 
+        console.log(pPath);
+
         //pNode为父节点
         pNode = CurrDObj;
         var pPathText = 'obj';
-        for (var r = pPath.length - 1; r >= 0; r--) {
+        if(type == "object"){
+            for (var r = pPath.length - 1; r >0 ; r--) {
+                printParentNode()
+            }
+        }
+        else{
+            for (var r = pPath.length - 1; r >=0 ; r--) {
+                printParentNode()
+            }
+        }
+        function printParentNode(){
             if (pPath[r].type == "array") {
                 pNode = pNode[pPath[r].key][pPath[r].path];
                 pPathText += '.' + pPath[r].key + '[' + pPath[r].path + ']';
@@ -247,6 +130,8 @@ $(function () {
                 pPathText += '.' + pPath[r].key;
             }
         }
+        console.log(pNode);
+
         console.log("the parent Node is:");
         console.log(pPathText);
     });
@@ -291,7 +176,7 @@ $(function () {
             alert("请选择一个节点！");
         }
         else {
-            if (type == "object" || (type == "file" && pathClass == "items")) {
+            if (type == "object") {
                 //选择节点object类型  <添加父节点/子节点>
                 var nNodeKey = prompt("请输入需要添加叶子节点的LeafKey", "key");
                 console.log("新节点：" + nNodeKey);
@@ -299,12 +184,10 @@ $(function () {
             }
             else if (type == "file") {
                 //选择节点file类型 <添加父节点/子节点>
-
                 if (pathClass == "links") {
-                    choicesList = ["type"];
+                    choicesList = ["type","value"];
                 }
-
-                selectChoices(choicesList);
+                selectChoices(choicesList,"c");
             }
             else {
                 alert("该节点无法添加新的节点！");
@@ -328,10 +211,10 @@ $(function () {
                 addParentNode(type, title);
             }
             else if (type == "file" && pathClass == "links") {
-                choicesList = ["value", "items", "links"];
-                selectChoices(choicesList);
+                choicesList = ["value", "items", "links","page-link"];
+                selectChoices(choicesList,"p");
             }
-            else if (type == "file" && pathClass == "items") {
+            else if (type == "object") {
                 //items下面可以任意添加父级节点
                 var nNodeKey = prompt("请输入需要添加父级节点的ParentKey", "key");
                 console.log("新节点：" + nNodeKey);
@@ -364,7 +247,13 @@ $(function () {
         else {
             var option = new Object();
             option[nNodeKey] = nNodeKey;
-            $(pNode).data(option);//添加新节点，更新CurrObj
+            if(type == "object"){
+                $(pNode[title]).data(option);
+            }
+            else{
+                $(pNode).data(option);//添加新节点，更新CurrObj
+            }
+
         }
         UpdateTree();//重新更新tree
         showDocObj();
@@ -397,7 +286,7 @@ $(function () {
         showDocObj();
     }
 
-    function selectChoices(choicesList) {
+    function selectChoices(choicesList,flag) {
         var choices = '';
         for (var c in choicesList) {
             choices += '<button name="' + choicesList[c] + '">' + choicesList[c] + '</button>';
@@ -405,7 +294,7 @@ $(function () {
         $("#selectChoices").html(choices);
         $("#selectChoices button").live("click", function () {
             var theName = $(this).attr("name");
-            if (theName == "type") {
+            if (flag=="c") {
                 addChildNode(theName);
             }
             else {
@@ -419,21 +308,17 @@ $(function () {
     /***
      * [Remove] Remove the nodes
      */
-    $("#removeNode").bind("click",function(){
+    $("#removeNode").bind("click", function () {
         if (chooingNode == null) {
             alert("请选择一个节点！");
         }
-        else{
+        else {
             var r = confirm("你确定删除节点" + chooingNode.attr("title") + " : " + chooingNode.find("span").text() + " 吗?");
             if (r == true) {
                 console.log(pNode);
                 console.log(title);
-                if(type == "object"){
-                    $(pNode).parents().removeData(title);
-                }
-                else{
                     $(pNode).removeData(title);
-                }
+
                 chooingNode = null;
             }
             UpdateTree();
@@ -467,6 +352,7 @@ $(function () {
             var newName = prompt("请修改" + chooingNode.attr("title") + "的内容", chooingNode.children("span").text());
             if (newName != null && newName != "") {
                 chooingNode.children("span").text(newName);
+                pNode[title] = newName;
             }
             else {
                 alert("不能为空！");
@@ -496,8 +382,8 @@ $(function () {
     function createTree(currObj) {
         $.each(currObj, function (firstObj) {
             if (typeof currObj[firstObj] == "object") {
-                if (firstObj == "links" || firstObj == "items") {
-                    //[数组结构]如果key值等于links或者items，以数组的形式遍历
+                if (firstObj == "links") {
+                    //[数组结构]如果key值等于links以数组的形式遍历
                     branches += '<li class="array">' +
                         '<a title="' + firstObj + '" type="array" path="' + Nodepath + '" pathClass="' + NodepathClass + '">' + firstObj + ':</span></a>' +
                         '<ul>';

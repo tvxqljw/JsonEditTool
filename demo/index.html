@@ -13,13 +13,12 @@
     <title>配置文档Json编辑工具</title>
     <style type="text/css">
         html, body {
-            background: url("../images/back.png") repeat ;
+            background: url("../images/back.png") repeat;
             height: 100%;
             margin: 0;
             padding: 0;
             font-family: arial, verdana, sans-serif;
         }
-
         .wrap {
             width: 100%;
             height: 100%;
@@ -63,18 +62,18 @@
             float: left;
         }
 
-        #tree{
+        #tree {
             background-color: #fff;
             padding: 20px;
             font-size: 16px;
         }
 
-        #tree a{
+        #tree a {
             color: #0066bb;
             font-style: italic;
         }
 
-        #tree span{
+        #tree span {
             color: #000;
             font-style: normal;
         }
@@ -86,18 +85,19 @@
             float: right;
         }
 
-        #editDiv{
+        #editDiv {
             width: 170px;
             position: fixed;
             overflow: hidden;
         }
 
-        #editDiv button{
+        #editDiv button {
             width: 170px;
             float: left;
         }
 
-        #treeJson{
+        #treeJson {
+            background-color: #fff;
             border: 1px #ccc solid;
             width: 100%;
             min-height: 500px;
@@ -105,12 +105,14 @@
             padding: 20px;
             outline: 0;
             font-size: 16px;
+            overflow: hidden;
+            height: auto;
 
         }
 
-        #getJson,#addChildNode,#addParentNode,#removeNode,
-        #editNode,#addFirstNodeButton{
-            margin-bottom:10px;
+        #getJson, #addChildNode, #addParentNode, #removeNode,
+        #editNode, #addFirstNodeButton {
+            margin-bottom: 10px;
             color: #fff;
             font-weight: bold;
             border: 0;
@@ -128,46 +130,74 @@
             transition: background-color 0.2s linear;
         }
 
-
-        #getJson{
+        #getJson {
             background-color: #34495E;
         }
 
-        #addChildNode{
+        #addChildNode {
             background-color: #2ECC71;
         }
 
-        #addChildNode:hover{
+        #addChildNode:hover {
             background-color: #58D68D;
         }
 
-        #addParentNode{
+        #addParentNode {
             background-color: #1ABC9C;
         }
 
-        #addParentNode:hover{
+        #addParentNode:hover {
             background-color: #48C9B0;
         }
 
-        #removeNode{
+        #removeNode {
             background-color: #E74C3C;
         }
 
-        #removeNode:hover{
+        #removeNode:hover {
             background-color: #EC7063;
         }
 
-        #editNode{
+        #editNode {
             background-color: #F1C40F;
         }
 
-        #editNode:hover{
+        #editNode:hover {
             background-color: #F5D313;
         }
 
-        #addFirstNodeButton{
+        #addFirstNodeButton {
             background-color: #3498DB;
         }
+
+        #selectChoices {
+            background-color: #fff;
+            width: 150px;
+            padding: 10px;
+            height: auto;
+            float: left;
+            margin-top: 200px;
+            position: fixed;
+            bottom: 0;
+        }
+
+        #selectChoices button{
+            border: 2px #ccc solid;
+            padding: 5px 10px;
+            line-height: 1em;
+            color: #000;
+            background-color: #FFFFFF;
+            outline: 0;
+            margin: 10px;
+            float: left;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        #selectChoices button:hover{
+            border: 2px #000 solid;
+        }
+
 
     </style>
 </head>
@@ -186,8 +216,10 @@
 
             <div id="resultDiv">
                 <h1>代码输出</h1>
-                <button id="getJson">获取json</button><br>
-                <textarea id="treeJson"></textarea>
+                <button id="getJson">获取json</button>
+                <br>
+
+                <div id="treeJson"></div>
             </div>
         </div>
     </div>
@@ -196,16 +228,24 @@
     <div class="fixed">
         <div id="editDiv">
             <h1>编辑工具</h1>
-            <button id="addParentNode">添加父节点</button>
-            <button id="addChildNode">添加子节点</button><br>
-            <button id="removeNode">删除节点</button><br>
-            <button id="editNode">修改内容</button>
+            <div>
+                <button id="addParentNode">添加父节点</button>
+                <button id="addChildNode">添加子节点</button>
+                <br>
+                <button id="removeNode">删除节点</button>
+                <br>
+                <button id="editNode">修改内容</button>
+            </div>
+
+        </div>
+        <div id="selectChoices">
+            <h1>可选节点</h1>
         </div>
     </div>
 
 </div>
 
-<div id="selectChoices" style="width: 100px;height: auto;float: right;bottom: 0; position: fixed"></div>
+
 
 
 <!--javascript-->
