@@ -110,7 +110,7 @@
 
         }
 
-        #getJson, #addChildNode, #addParentNode,#addArrayNode, #removeNode,
+        #getJson, #addObjectNode, #addArrayNode,#addFileNode,#addLeafNode, #removeNode,
         #editNode, #addFirstNodeButton {
             margin-bottom: 10px;
             color: #fff;
@@ -132,25 +132,13 @@
         #getJson {
             background-color: #34495E;
         }
-        #addChildNode {
+        #addObjectNode,#addArrayNode,#addFileNode,#addLeafNode {
             background-color: #2ECC71;
         }
-        #addChildNode:hover {
+        #addObjectNode:hover,#addArrayNode:hover,#addFileNode:hover,#addLeafNode:hover {
             background-color: #58D68D;
         }
-        #addParentNode {
-            background-color: #1ABC9C;
-        }
-        #addParentNode:hover {
-            background-color: #48C9B0;
-        }
 
-        #addArrayNode{
-            background-color: #0066bb;
-        }
-        #addArrayNode:hover{
-            background-color:#34495E;
-        }
         #removeNode {
             background-color: #E74C3C;
         }
@@ -167,7 +155,7 @@
             background-color: #3498DB;
         }
         #selectChoices {
-            background-color: #fff;
+            background-color: #0066bb;
             width: 150px;
             padding: 10px;
             height: auto;
@@ -223,12 +211,14 @@
         <div id="editDiv">
             <h1>编辑工具</h1>
             <div>
-                <button id="addParentNode">添加"object":{}/[]</button>
-                <button id="addChildNode">添加"leaf":"leaf"</button>
-                <button id="addArrayNode">添加[ ]</button>
-                <br>
+                <h2>Add</h2>
+                <button id="addObjectNode">"key":{ }</button>
+                <button id="addArrayNode">"key":[ ]</button>
+                <button id="addFileNode">[ ] / " "</button>
+                <button id="addLeafNode">"key":"value"</button>
+                <h2>Delete</h2>
                 <button id="removeNode">删除节点</button>
-                <br>
+                <h2>Rename</h2>
                 <button id="editNode">修改内容</button>
             </div>
 
