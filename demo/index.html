@@ -110,7 +110,7 @@
 
         }
 
-        #getJson, #addChildNode, #addParentNode, #removeNode,
+        #getJson, #addChildNode, #addParentNode,#addArrayNode, #removeNode,
         #editNode, #addFirstNodeButton {
             margin-bottom: 10px;
             color: #fff;
@@ -143,6 +143,13 @@
         }
         #addParentNode:hover {
             background-color: #48C9B0;
+        }
+
+        #addArrayNode{
+            background-color: #0066bb;
+        }
+        #addArrayNode:hover{
+            background-color:#34495E;
         }
         #removeNode {
             background-color: #E74C3C;
@@ -216,8 +223,9 @@
         <div id="editDiv">
             <h1>编辑工具</h1>
             <div>
-                <button id="addParentNode">添加父节点</button>
-                <button id="addChildNode">添加子节点</button>
+                <button id="addParentNode">添加"object":{}/[]</button>
+                <button id="addChildNode">添加"leaf":"leaf"</button>
+                <button id="addArrayNode">添加[ ]</button>
                 <br>
                 <button id="removeNode">删除节点</button>
                 <br>

@@ -61,6 +61,15 @@ $(function () {
                                         "type": "jsonp",
                                         "value": ""
                                     }
+                                },
+                                "page_link": {
+                                    "type": "reg_url",
+                                    "value": [
+                                        "@url",
+                                        "(.+?)_(\\d+)\\.html",
+                                        "{1}_$({2}+1).html",
+                                        {"len": 100}
+                                    ]
                                 }
                             }
                         ]
@@ -110,17 +119,17 @@ $(function () {
         //pNode为父节点
         pNode = CurrDObj;
         var pPathText = 'obj';
-        if(type == "object"){
-            for (var r = pPath.length - 1; r >0 ; r--) {
+        if (type == "object") {
+            for (var r = pPath.length - 1; r > 0; r--) {
                 printParentNode()
             }
         }
-        else{
-            for (var r = pPath.length - 1; r >=0 ; r--) {
+        else {
+            for (var r = pPath.length - 1; r >= 0; r--) {
                 printParentNode()
             }
         }
-        function printParentNode(){
+        function printParentNode() {
             if (pPath[r].type == "array") {
                 pNode = pNode[pPath[r].key][pPath[r].path];
                 pPathText += '.' + pPath[r].key + '[' + pPath[r].path + ']';
@@ -130,6 +139,7 @@ $(function () {
                 pPathText += '.' + pPath[r].key;
             }
         }
+
         console.log(pNode);
 
         console.log("the parent Node is:");
@@ -185,17 +195,55 @@ $(function () {
             else if (type == "file") {
                 //选择节点file类型 <添加父节点/子节点>
                 if (pathClass == "links") {
-                    choicesList = ["type","value"];
+                    choicesList = ["type", "value"];
                 }
-                selectChoices(choicesList,"c");
+                selectChoices(choicesList, "c");
             }
             else {
-                alert("该节点无法添加新的节点！");
+                alert("该节点无法leaf节点！");
             }
         }
         chooingNode = null;
 
     });
+
+    /***
+     * [Add] add a new array node
+     */
+
+    $("#addArrayNode").bind("click", function () {
+        if (chooingNode == null) {
+            alert("请选择一个节点！");
+        }
+        else{
+            if (type == "array") {
+                //links和page_link中的value
+                //选择节点array节点  <添加file节点>
+                addArrayNode(title);
+            }
+            else if(title == "value"){
+                //page_link value
+                addPage_linkValue(title);
+            }
+            else {
+                alert("该节点无法添加[ ]");
+            }
+        }
+    });
+
+    function addArrayNode(title) {
+        //数组
+        console.log(pNode);
+        pNode[title].push({});
+        UpdateTree();//重新更新tree
+    }
+
+    function addPage_linkValue(title){
+        var nNodeKey = prompt("请输入需要添加叶子节点的LeafKey", "key");
+        pNode[title].push(nNodeKey);
+        UpdateTree();//重新更新tree
+    }
+
 
     /***
      * [Add] add a new parent node
@@ -206,25 +254,30 @@ $(function () {
             alert("请选择一个节点！");
         }
         else {
-            if (type == "array") {
-                //选择节点array节点  <添加file节点>
-                addParentNode(type, title);
-            }
-            else if (type == "file" && pathClass == "links") {
-                choicesList = ["value", "items", "links","page-link"];
-                selectChoices(choicesList,"p");
+            if (type == "file" && pathClass == "links") {
+                //links下面的file
+                choicesList = ["value", "items", "links", "page_link"];
+                selectChoices(choicesList, "p");
             }
             else if (type == "object") {
-                //items下面可以任意添加父级节点
-                var nNodeKey = prompt("请输入需要添加父级节点的ParentKey", "key");
-                console.log("新节点：" + nNodeKey);
-                addParentNode(type, nNodeKey);
+                if (title == "page_link") {
+                    choicesList = ["value"];
+                    selectChoices(choicesList, "p");
+                }
+                else {
+                    //items下面可以任意添加父级节点
+                    var nNodeKey = prompt("请输入需要添加父级节点的ParentKey", "key");
+                    console.log("新节点：" + nNodeKey);
+                    addParentNode(type, nNodeKey);
+                }
             }
+
             else {
-                alert("该节点无法添加父节点！")
+                alert("该节点无法添加object节点！")
             }
         }
         chooingNode = null;
+        choicesList = [];
 
         showDocObj();
     });
@@ -232,9 +285,18 @@ $(function () {
     function isNodeExist(key) {
         //验证节点是否存在
         var flag = 0;
-        for (var k in pNode) {
-            if (k == key) {
-                flag = 1;
+        if (type == "file") {
+            for (var k in pNode) {
+                if (k == key) {
+                    flag = 1;
+                }
+            }
+        }
+        else {
+            for (var k in pNode[title]) {
+                if (k == key) {
+                    flag = 1;
+                }
             }
         }
         return flag;
@@ -247,46 +309,66 @@ $(function () {
         else {
             var option = new Object();
             option[nNodeKey] = nNodeKey;
-            if(type == "object"){
-                $(pNode[title]).data(option);
-            }
-            else{
-                $(pNode).data(option);//添加新节点，更新CurrObj
-            }
-
-        }
-        UpdateTree();//重新更新tree
-        showDocObj();
-    }
-
-    function addParentNode(type, title) {
-        if (type == "array") {
-            pNode[title].push({});
-        }
-        else {
-            if (isNodeExist(title)) {
-                alert("该节点已存在！无法再次添加。");
+            if (type == "object") {
+                if(title =="value"){
+                    //page_link value
+                    pNode[title].push(option)
+                }
+                else{
+                    $(pNode[title]).data(option);
+                }
             }
             else {
+                //file
+                $(pNode).data(option);//添加新节点，更新CurrObj
 
-                if (title == "items" || title == "links") {
-                    var option = new Array();
-                    option[title] = [];
-                    $(pNode).data(option);//添加新节点，更新CurrObj
-                }
-
-                else {
-                    var option = new Object();
-                    option[title] = {};
-                    $(pNode).data(option);//添加新节点，更新CurrObj
-                }
             }
+            option = null;
+
         }
         UpdateTree();//重新更新tree
         showDocObj();
     }
 
-    function selectChoices(choicesList,flag) {
+    function addParentNode(type, newNodeKey) {
+        if (isNodeExist(newNodeKey)) {
+            alert("该节点已存在！无法再次添加。");
+        }
+        else {
+            if (type == "file") {
+               if(newNodeKey == "links"){
+                   var option = new Array();
+                   option[newNodeKey] = [];
+                   $(pNode).data(option);//添加新节点，更新CurrObj
+               }
+                else {
+                   var option = new Object();
+                   option[newNodeKey] = {};
+                   $(pNode).data(option);//添加新节点，更新CurrObj
+               }
+                option = null;
+            }
+            else{
+                if (title == "page_link") {
+                    var option = new Array();
+                    option[newNodeKey] = [];
+                    $(pNode[title]).data(option);//添加新节点，更新CurrObj
+                }
+                else {
+                    //items/value
+                    var option = new Object();
+                    option[newNodeKey] = {};
+                    $(pNode[title]).data(option);//添加新节点，更新CurrObj
+                }
+                option = null;
+            }
+
+            UpdateTree();//重新更新tree
+            showDocObj();
+        }
+    }
+
+    function selectChoices(choicesList, flag) {
         var choices = '';
         for (var c in choicesList) {
             choices += '<button name="' + choicesList[c] + '">' + choicesList[c] + '</button>';
@@ -294,7 +376,7 @@ $(function () {
         $("#selectChoices").html(choices);
         $("#selectChoices button").live("click", function () {
             var theName = $(this).attr("name");
-            if (flag=="c") {
+            if (flag == "c") {
                 addChildNode(theName);
             }
             else {
@@ -317,7 +399,7 @@ $(function () {
             if (r == true) {
                 console.log(pNode);
                 console.log(title);
-                    $(pNode).removeData(title);
+                $(pNode).removeData(title);
 
                 chooingNode = null;
             }
@@ -399,13 +481,13 @@ $(function () {
                     branches += '</ul></li>';
                 }
                 else {
+                    NodepathClass = firstObj;
                     //{对象结构}
                     branches += '<li>' +
                         '<a title="' + firstObj + '" type="object" path="' + Nodepath + '" pathClass="' + NodepathClass + '">' + firstObj + ':</span></a>' +
                         '<ul>';
                     createTree(currObj[firstObj]);
                     branches += '</ul></li>';
-
                 }
             }
             else {
