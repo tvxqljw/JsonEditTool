@@ -78,7 +78,7 @@ $(function () {
             }
         ]
     };
-    var CurrDObj = DocObj;//当前文档
+    var CurrDObj = testObj;//当前文档
 
     /***
      *  get current chosen node
@@ -116,7 +116,7 @@ $(function () {
         //pNode为父节点
         pNode = CurrDObj;
         var pPathText = 'obj';
-        if (type == "object") {
+        if (type == "object"|| type == "file") {
             for (var r = pPath.length - 1; r > 0; r--) {
                 printParentNode()
             }
@@ -277,7 +277,7 @@ $(function () {
         console.log("keyname:"+keyname);
         var flag = 0;
         if(type == "file"){
-            for(var k in pNode){
+            for(var k in pNode[pathClass][path]){
                 console.log("节点有："+k);
                 if (k == keyname) {
                     flag = 1;
@@ -326,7 +326,7 @@ $(function () {
         else{
            if(type == "file"){
                objectOption[newname] = {};
-               $(pNode).data(objectOption);
+               $(pNode[pathClass][path]).data(objectOption);
            }
             else{
                objectOption[newname] = {};
@@ -345,7 +345,7 @@ $(function () {
             var arrayOption = new Array();
             arrayOption[newname] = [];
             if(type == "file"){
-                $(pNode).data(arrayOption);
+                $(pNode[pathClass][path]).data(arrayOption);
             }
             else{
                 $(pNode[title]).data(arrayOption);
@@ -375,7 +375,7 @@ $(function () {
             var objectOption = new Object();
             objectOption[newname] = newname;
             if(type == "file"){
-                $(pNode).data(objectOption);
+                $(pNode[pathClass][path]).data(objectOption);
             }
             else if(type == "array"){
                 pNode[title].push(objectOption)
@@ -402,7 +402,7 @@ $(function () {
 
 
                 if(type == "file"){
-                    console.log(pNode);
+                   pNode[pathClass].splice(title,1);
                 }
                 else if($(chooingNode).parents("li").eq(1).find("a").attr("type") == "array" && $(chooingNode).parents("li").eq(1).find("a").attr("title") != "links"){
                    var parent = $(chooingNode).parents("li").eq(1).find("a").attr("title");
