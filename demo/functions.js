@@ -13,72 +13,40 @@ $(function () {
     var type, path, pathClass, title;
     //测试数据
     var testObj = {
-        "name": "ent.163.com",
+        "name": "name",
         "links": [
+        {
+            "type": "type",
+            "value": "value",
+            "links": [
             {
-                "type": "const",
-                "value": "http://ent.163.com/",
+                "type": "type",
+                "value": {
+                    "allow": "allow"
+                },
+                "items": {
+                    "description": {
+                        "type": "type",
+                        "value": "value"
+                    },
+                    "time": {
+                        "type": "type",
+                        "value": [
+                            "//div[@class='ep-time-soure cDGray']/text()",
+                            "(\\\\d+-\\\\d+-\\\\d+ \\\\d\\\\d:\\\\d\\\\d:\\\\d\\\\d)"
+                        ],
+                        "format": "format"
+                    }},
                 "links": [
-                    {
-                        "type": "link_extractor",
-                        "value": {"allow": "http://ent.163.com/\\d+/\\d+/\\d+/[0-9a-zA-Z]+.html"},
-                        "items": {
-                            "description": {
-                                "type": "xpath",
-                                "value": "//meta[@name='content']/@content"
-                            },
-                            "title": {
-                                "type": "xpath",
-                                "value": "//title/text()"
-                            },
-                            "keywords": {
-                                "type": "xpath",
-                                "value": "//meta[@name='keywords']/@content"
-                            },
-                            "source": {
-                                "type": "xpath",
-                                "value": "//div[@class='ep-time-soure cDGray']/a/text()"
-                            },
-                            "time": {
-                                "type": "xpath_reg",
-                                "value": [
-                                    "//div[@class='ep-time-soure cDGray']/text()",
-                                    "(\\d+-\\d+-\\d+ \\d\\d:\\d\\d:\\d\\d)"
-                                ],
-                                "format": "timestamp"
-                            }
-                        },
-                        "links": [
-                            {
-                                "type": "reg_url",
-                                "value": [
-                                    "@url",
-                                    "/(\\w+)\\.html",
-                                    "http://comment.ent.163.com/cache/newlist/ent2_bbs/{1}_1.html"
-                                ],
-                                "items": {
-                                    "comment": {
-                                        "type": "jsonp",
-                                        "value": ""
-                                    }
-                                },
-                                "page_link": {
-                                    "type": "reg_url",
-                                    "value": [
-                                        "@url",
-                                        "(.+?)_(\\d+)\\.html",
-                                        "{1}_$({2}+1).html",
-                                        {"len": 100}
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    };
-    var CurrDObj = testObj;//当前文档
+                {
+                    "type": "type",
+                    "value": [
+                        "@url", "/(\\\\w+)\\\\.html",
+                        "http://comment.ent.163.com/cache/newlist/ent2_bbs/{1}_1.html"], "items": {"comment": {"type": "type", "value": "value"}}, "page_link": {"type": "type", "value": ["@url", "(.+?)_(\\\\d+)\\\\.html", "{1}_$({2}+1).html"]}}
+            ]}
+        ]}
+    ]};
+    var CurrDObj = DocObj;//当前文档
 
     /***
      *  get current chosen node
@@ -116,7 +84,7 @@ $(function () {
         //pNode为父节点
         pNode = CurrDObj;
         var pPathText = 'obj';
-        if (type == "object"|| type == "file") {
+        if (type == "object" || type == "file") {
             for (var r = pPath.length - 1; r > 0; r--) {
                 printParentNode()
             }
@@ -136,6 +104,7 @@ $(function () {
                 pPathText += '.' + pPath[r].key;
             }
         }
+
         console.log("the parent Node is:");
         console.log(pPathText);
     });
@@ -172,26 +141,26 @@ $(function () {
     /***
      * [Add] add a new node of "key":{}
      */
-    $("#addObjectNode").bind("click",function(){
+    $("#addObjectNode").bind("click", function () {
         if (chooingNode == null) {
             alert("请选择一个节点！");
         }
-        else{
-            if(type == "file"){
-                choicesList = ["items","value","page_link"];
+        else {
+            if (type == "file") {
+                choicesList = ["items", "value", "page_link"];
                 selectChoices(choicesList, "o");
             }
-            else if(type == "object"){
-                if(title == "page_link"){
-                    choicesList = ["items","value"];
+            else if (type == "object") {
+                if (title == "page_link") {
+                    choicesList = ["items", "value"];
                     selectChoices(choicesList, "o");
                 }
-                else{
+                else {
                     var nNodeKey = prompt("请输入需要添加的key名", "key");
                     addObjectNode(nNodeKey);
                 }
             }
-            else{
+            else {
                 alert('该节点无法添加"key":{}');
             }
         }
@@ -202,20 +171,20 @@ $(function () {
     /***
      * [Add] add a new node of "key":[]
      */
-    $("#addArrayNode").bind("click",function(){
+    $("#addArrayNode").bind("click", function () {
         if (chooingNode == null) {
             alert("请选择一个节点！");
         }
-        else{
-            if(type == "file"){
-                choicesList = ["links","value"];
+        else {
+            if (type == "file") {
+                choicesList = ["links", "value"];
                 selectChoices(choicesList, "a");
             }
-            else if(type == "object"){
+            else if (type == "object") {
                 choicesList = ["value"];
                 selectChoices(choicesList, "a");
             }
-            else{
+            else {
                 alert('该节点无法添加"key":[]');
             }
         }
@@ -224,15 +193,15 @@ $(function () {
     /***
      * [Add] add a new node of file:[]
      */
-    $("#addFileNode").bind("click",function(){
+    $("#addFileNode").bind("click", function () {
         if (chooingNode == null) {
             alert("请选择一个节点！");
         }
-        else{
-            if(type == "array"){
+        else {
+            if (type == "array") {
                 addFileNode();
             }
-            else{
+            else {
                 alert('该节点无法添加 [ ]或" "');
             }
         }
@@ -241,52 +210,52 @@ $(function () {
     /***
      * [Add] add a new node of "key":"value"
      */
-    $("#addLeafNode").bind("click",function(){
+    $("#addLeafNode").bind("click", function () {
         if (chooingNode == null) {
             alert("请选择一个节点！");
         }
-        else{
-            if(type == "file"){
-                choicesList = ["type","value"];
+        else {
+            if (type == "file") {
+                choicesList = ["type", "value"];
                 selectChoices(choicesList, "l");
             }
-            else if(type == "array" && title != "links"){
+            else if (type == "array" && title != "links") {
                 var nNodeKey = prompt("请输入需要添加leaf key", "key");
                 console.log("新节点：" + nNodeKey);
                 addLeafNode(nNodeKey);
             }
-            else if(type == "object"){
-                if(title == "page_link"){
-                    choicesList = ["type","value"];
+            else if (type == "object") {
+                if (title == "page_link") {
+                    choicesList = ["type", "value"];
                     selectChoices(choicesList, "l");
                 }
-                else{
+                else {
                     var nNodeKey = prompt("请输入需要添加leaf key", "key");
                     console.log("新节点：" + nNodeKey);
                     addLeafNode(nNodeKey);
                 }
             }
-            else{
+            else {
                 alert('该节点无法添加"key":"value"');
             }
 
         }
     });
 
-    function isNodeExist(keyname){
-        console.log("keyname:"+keyname);
+    function isNodeExist(keyname) {
+        console.log("keyname:" + keyname);
         var flag = 0;
-        if(type == "file"){
-            for(var k in pNode[pathClass][path]){
-                console.log("节点有："+k);
+        if (type == "file") {
+            for (var k in pNode[pathClass][path]) {
+                console.log("节点有：" + k);
                 if (k == keyname) {
                     flag = 1;
                 }
             }
         }
-        else{
-            for(var k in pNode[title]){
-                console.log("节点有："+k);
+        else {
+            for (var k in pNode[title]) {
+                console.log("节点有：" + k);
                 if (k == keyname) {
                     flag = 1;
                 }
@@ -295,20 +264,27 @@ $(function () {
         return flag;
     }
 
-    function selectChoices(choicesList, flag){
+    function selectChoices(choicesList, flag) {
         var choices = '';
         for (var c in choicesList) {
             choices += '<button name="' + choicesList[c] + '">' + choicesList[c] + '</button>';
         }
         $("#selectChoices").html(choices);
         choices = null;//清空
-        $("#selectChoices button").live("click",function(){
+        $("#selectChoices button").live("click", function () {
             var theName = $(this).attr("name");//获取所选button名
-            switch (flag){
-                case "o":addObjectNode(theName);break;
-                case "a":addArrayNode(theName);break;
-                case "l":addLeafNode(theName);break;
-                default :alert("选择无效");
+            switch (flag) {
+                case "o":
+                    addObjectNode(theName);
+                    break;
+                case "a":
+                    addArrayNode(theName);
+                    break;
+                case "l":
+                    addLeafNode(theName);
+                    break;
+                default :
+                    alert("选择无效");
             }
             $("#selectChoices").html("");//清空
             $("#selectChoices button").die("click");//取消绑定事件，避免多次执行
@@ -317,70 +293,70 @@ $(function () {
 
     }
 
-    function addObjectNode(newname){
+    function addObjectNode(newname) {
         //添加"key":{}
         var objectOption = new Object();
-        if(isNodeExist(newname)){
+        if (isNodeExist(newname)) {
             alert("该节点已存在！无法再次添加。");
         }
-        else{
-           if(type == "file"){
-               objectOption[newname] = {};
-               $(pNode[pathClass][path]).data(objectOption);
-           }
-            else{
-               objectOption[newname] = {};
-               $(pNode[title]).data(objectOption);
-           }
+        else {
+            if (type == "file") {
+                objectOption[newname] = {};
+                $(pNode[pathClass][path]).data(objectOption);
+            }
+            else {
+                objectOption[newname] = {};
+                $(pNode[title]).data(objectOption);
+            }
             UpdateTree();
         }
     }
 
-    function addArrayNode(newname){
+    function addArrayNode(newname) {
         //添加"key":[]
-        if(isNodeExist(newname)){
+        if (isNodeExist(newname)) {
             alert("该节点已存在！无法再次添加。");
         }
-        else{
+        else {
             var arrayOption = new Array();
             arrayOption[newname] = [];
-            if(type == "file"){
+            if (type == "file") {
                 $(pNode[pathClass][path]).data(arrayOption);
             }
-            else{
+            else {
                 $(pNode[title]).data(arrayOption);
             }
             UpdateTree();
         }
     }
 
-    function addFileNode(){
+    function addFileNode() {
         //添加[]/""
-        if(title == "links"){
+        if (title == "links") {
             pNode[title].push({});
         }
-        else{
+        else {
             var nNodeValue = prompt("请输入需要添加value", "value");
             pNode[title].push(nNodeValue);
         }
         UpdateTree();
     }
 
-    function addLeafNode(newname){
+    function addLeafNode(newname) {
         //添加"key":"value"
-        if(isNodeExist(newname)){
+        if (isNodeExist(newname)) {
             alert("该节点已存在！无法再次添加。");
         }
-        else{
+        else {
             var objectOption = new Object();
             objectOption[newname] = newname;
-            if(type == "file"){
+            if (type == "file") {
                 $(pNode[pathClass][path]).data(objectOption);
             }
-            else if(type == "array"){
+            else if (type == "array") {
                 pNode[title].push(objectOption)
             }
-            else{
+            else {
                 //type == object
                 $(pNode[title]).data(objectOption);
             }
@@ -401,14 +377,14 @@ $(function () {
             if (r == true) {
 
 
-                if(type == "file"){
-                   pNode[pathClass].splice(title,1);
+                if (type == "file") {
+                    pNode[pathClass].splice(title, 1);
                 }
-                else if($(chooingNode).parents("li").eq(1).find("a").attr("type") == "array" && $(chooingNode).parents("li").eq(1).find("a").attr("title") != "links"){
-                   var parent = $(chooingNode).parents("li").eq(1).find("a").attr("title");
-                    pNode[parent].splice(title,1);
+                else if ($(chooingNode).parents("li").eq(1).find("a").attr("type") == "array" && $(chooingNode).parents("li").eq(1).find("a").attr("title") != "links") {
+                    var parent = $(chooingNode).parents("li").eq(1).find("a").attr("title");
+                    pNode[parent].splice(title, 1);
                 }
-                else{
+                else {
                     $(pNode).removeData(title);
                 }
 
@@ -445,12 +421,12 @@ $(function () {
             if (newName != null && newName != "") {
                 chooingNode.children("span").text(newName);
 
-                if($(chooingNode).parents("li").eq(1).find("a").attr("type") == "array" && $(chooingNode).parents("li").eq(1).find("a").attr("title") != "links"){
+                if ($(chooingNode).parents("li").eq(1).find("a").attr("type") == "array" && $(chooingNode).parents("li").eq(1).find("a").attr("title") != "links") {
                     var parent = $(chooingNode).parents("li").eq(1).find("a").attr("title");
-                    console.log("parent:"+parent);
-                    pNode[parent].splice(title,1,newName);
+                    console.log("parent:" + parent);
+                    pNode[parent].splice(title, 1, newName);
                 }
-                else{
+                else {
                     pNode[title] = newName;
                 }
 
@@ -502,16 +478,16 @@ $(function () {
                 }
                 else {
                     var JsonString = JSON.stringify(currObj[firstObj]);
-                    var firstFlag = JsonString.substring(0,1);//检测是array还是object
+                    var firstFlag = JsonString.substring(0, 1);//检测是array还是object
                     //{对象结构}
                     branches += '<li>';
-                    if(firstFlag == "["){
-                        branches +=    '<a title="' + firstObj + '" type="array" path="' + Nodepath + '" pathClass="' + NodepathClass + '">' + firstObj + ':</span></a>';
+                    if (firstFlag == "[") {
+                        branches += '<a title="' + firstObj + '" type="array" path="' + Nodepath + '" pathClass="' + NodepathClass + '">' + firstObj + ':</span></a>';
                     }
-                    else{
-                        branches +=    '<a title="' + firstObj + '" type="object" path="' + Nodepath + '" pathClass="' + NodepathClass + '">' + firstObj + ':</span></a>';
+                    else {
+                        branches += '<a title="' + firstObj + '" type="object" path="' + Nodepath + '" pathClass="' + NodepathClass + '">' + firstObj + ':</span></a>';
                     }
-                        branches +=   '<ul>';
+                    branches += '<ul>';
                     createTree(currObj[firstObj]);
                     branches += '</ul></li>';
                 }
