@@ -1,217 +1,225 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="css/jquery.treeview.css"/>
-    <link rel="stylesheet" href="css/screen.css"/>
-    <script src="lib/jquery.js" type="text/javascript"></script>
-    <script src="lib/jquery.cookie.js" type="text/javascript"></script>
-    <script src="lib/jquery.treeview.js" type="text/javascript"></script>
-    <script src="lib/jquery.treeview.edit.js" type="text/javascript"></script>
-    <title>配置文档Json编辑工具</title>
-    <style type="text/css">
-        html, body {
-            background: url("css/images/back.png") repeat;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            font-family: arial, verdana, sans-serif;
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta charset="utf-8">
+<link rel="stylesheet" href="css/jquery.treeview.css"/>
+<link rel="stylesheet" href="css/screen.css"/>
+<script src="lib/jquery.js" type="text/javascript"></script>
+<script src="lib/jquery.cookie.js" type="text/javascript"></script>
+<script src="lib/jquery.treeview.js" type="text/javascript"></script>
+<script src="lib/jquery.treeview.edit.js" type="text/javascript"></script>
+<title>配置文档Json编辑工具</title>
+<style type="text/css">
+    html, body {
+        background: url("css/images/back.png") repeat;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        font-family: arial, verdana, sans-serif;
+    }
 
-        .wrap {
+    .wrap {
+        width: 100%;
+        height: 100%;
+    }
+
+    .fixed {
+        float: left;
+        width: 200px;
+        height: 100%;
+        margin-left: -100%;
+        padding: 10px;
+    }
+
+    .main {
+        float: left;
+        width: 100%;
+        height: 100%;
+    }
+
+    .main-inner {
+        margin-left: 200px;
+        height: 100%;
+        padding: 10px;
+        border-left: 1px #ccc solid;
+    }
+
+    .chosed {
+        color: red;
+        font-weight: bold;
+    }
+
+    #tree a:hover {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #treeDiv {
+        border: 1px #ccc dotted;
+        padding: 50px;
+        width: 50%;
+        float: left;
+    }
+
+    #tree {
+        background-color: #fff;
+        padding: 20px;
+        font-size: 16px;
+    }
+
+    #tree a {
+        color: #0066bb;
+        font-style: italic;
+    }
+
+    #tree span {
+        color: #000;
+        font-style: normal;
+    }
+
+    #resultDiv {
+        border: 1px #ccc dotted;
+        padding: 50px;
+        width: 35%;
+        float: left;
+    }
+
+    #editDiv {
+        width: 170px;
+        position: fixed;
+        overflow: hidden;
+    }
+
+    #editChoices button {
+        width: 170px;
+        float: left;
+    }
+
+    #treeJson {
+        background-color: #fff;
+        border: 1px #ccc solid;
+        width: 100%;
+        min-height: 500px;
+        color: #2C3E50;
+        padding: 20px;
+        outline: 0;
+        font-size: 16px;
+        overflow: hidden;
+        height: auto;
+
+    }
+
+    #getJson, #addObjectNode, #addArrayNode, #addFileNode, #addLeafNode, #addParentNode, #addChildNode, #removeNode,
+    #editNode, #addFirstNodeButton {
+        margin-bottom: 10px;
+        color: #fff;
+        font-weight: bold;
+        border: 0;
+        outline: 0;
+        padding: 10px 19px;
+        font-size: 16px;
+        line-height: 1.471;
+        border-radius: 6px;
+        cursor: pointer;
+        /*渐变颜色*/
+        -webkit-transition: background-color 0.2s linear;
+        -moz-transition: background-color 0.2s linear;
+        -o-transition: background-color 0.2s linear;
+        -ms-transition: background-color 0.2s linear;
+        transition: background-color 0.2s linear;
+    }
+
+    #getJson {
+        background-color: #34495E;
+    }
+
+    #addObjectNode, #addArrayNode, #addFileNode, #addLeafNode, #addParentNode, #addChildNode {
+        background-color: #2ECC71;
+    }
+
+    #addObjectNode:hover, #addArrayNode:hover, #addFileNode:hover, #addLeafNode:hover, #addParentNode:hover, #addChildNode:hover {
+        background-color: #58D68D;
+    }
+
+    #removeNode {
+        background-color: #E74C3C;
+    }
+
+    #removeNode:hover {
+        background-color: #EC7063;
+    }
+
+    #editNode {
+        background-color: #F1C40F;
+    }
+
+    #editNode:hover {
+        background-color: #F5D313;
+    }
+
+    #addFirstNodeButton {
+        background-color: #3498DB;
+    }
+
+    #mask {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 200;
+        height: 100%;
+        width: 100%;
+        background: #000000;
+        filter: alpha(opacity=30);
+        -moz-opacity: 0.3;
+        opacity: 0.3;
+    }
+
+    #selectChoices {
+        display: none;
+        position: absolute;
+        top: 20%;
+        left: 40%;
+        padding: 9px;
+        width: 300px;
+        z-index: 201;
+        height: auto;
+        border: 3px #000 solid;
+        background-color: #ECF0F1;
+    }
+
+    #selectChoices h1 {
+        border-bottom: 1px #ccc dashed;
+    }
+
+    #selectChoicesDiv button {
+        display: block;
+        border: 2px #ccc solid;
+        padding: 5px 10px;
+        line-height: 1em;
+        color: #000;
+        background-color: #FFFFFF;
+        outline: 0;
+        margin: 10px;
+        float: left;
+        cursor: pointer;
+        border-radius: 6px;
+    }
+
+    #selectChoicesDiv button:hover {
+        border: 2px #000 solid;
+    }
+
+    @media only screen and (min-width: 400px) and (max-width: 1024px) {
+        #treeDiv, #resultDiv {
             width: 100%;
-            height: 100%;
         }
 
-        .fixed {
-            float: left;
-            width: 200px;
-            height: 100%;
-            margin-left: -100%;
-            padding: 10px;
-        }
+    }
 
-        .main {
-            float: left;
-            width: 100%;
-            height: 100%;
-        }
-
-        .main-inner {
-            margin-left: 200px;
-            height: 100%;
-            padding: 10px;
-            border-left: 1px #ccc solid;
-        }
-
-        .chosed {
-            color: red;
-            font-weight: bold;
-        }
-
-        #tree a:hover {
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        #treeDiv {
-            border: 1px #ccc dotted;
-            padding: 50px;
-            width: 50%;
-            float: left;
-        }
-
-        #tree {
-            background-color: #fff;
-            padding: 20px;
-            font-size: 16px;
-        }
-
-        #tree a {
-            color: #0066bb;
-            font-style: italic;
-        }
-
-        #tree span {
-            color: #000;
-            font-style: normal;
-        }
-
-        #resultDiv {
-            border: 1px #ccc dotted;
-            padding: 50px;
-            width: 35%;
-            float: left;
-        }
-
-        #editDiv {
-            width: 170px;
-            position: fixed;
-            overflow: hidden;
-        }
-
-        #editChoices button {
-            width: 170px;
-            float: left;
-        }
-
-        #treeJson {
-            background-color: #fff;
-            border: 1px #ccc solid;
-            width: 100%;
-            min-height: 500px;
-            color: #2C3E50;
-            padding: 20px;
-            outline: 0;
-            font-size: 16px;
-            overflow: hidden;
-            height: auto;
-
-        }
-
-        #getJson, #addObjectNode, #addArrayNode,#addFileNode,#addLeafNode,#addParentNode,#addChildNode, #removeNode,
-        #editNode, #addFirstNodeButton {
-            margin-bottom: 10px;
-            color: #fff;
-            font-weight: bold;
-            border: 0;
-            outline: 0;
-            padding: 10px 19px;
-            font-size: 16px;
-            line-height: 1.471;
-            border-radius: 6px;
-            cursor: pointer;
-            /*渐变颜色*/
-            -webkit-transition: background-color 0.2s linear;
-            -moz-transition: background-color 0.2s linear;
-            -o-transition: background-color 0.2s linear;
-            -ms-transition: background-color 0.2s linear;
-            transition: background-color 0.2s linear;
-        }
-        #getJson {
-            background-color: #34495E;
-        }
-        #addObjectNode,#addArrayNode,#addFileNode,#addLeafNode,#addParentNode,#addChildNode {
-            background-color: #2ECC71;
-        }
-        #addObjectNode:hover,#addArrayNode:hover,#addFileNode:hover,#addLeafNode:hover,#addParentNode:hover,#addChildNode:hover{
-            background-color: #58D68D;
-        }
-
-        #removeNode {
-            background-color: #E74C3C;
-        }
-        #removeNode:hover {
-            background-color: #EC7063;
-        }
-        #editNode {
-            background-color: #F1C40F;
-        }
-        #editNode:hover {
-            background-color: #F5D313;
-        }
-        #addFirstNodeButton {
-            background-color: #3498DB;
-        }
-
-        #mask{
-            display: none;
-            position: absolute;
-            top:0;
-            left:0;
-            z-index:200;
-            height:100%;
-            width:100%;
-            background: #000000;
-            filter:alpha(opacity=30);
-            -moz-opacity:0.3;
-            opacity:0.3;
-        }
-
-        #selectChoices {
-            display: none;
-            position:absolute;
-            top:20%;
-            left:40%;
-            padding: 9px;
-            width: 300px;
-            z-index:201;
-            height: auto;
-            border: 3px #000 solid;
-            background-color: #ECF0F1;
-        }
-
-        #selectChoices h1{
-            border-bottom: 1px #ccc dashed;
-        }
-
-        #selectChoicesDiv button{
-            display: block;
-            border: 2px #ccc solid;
-            padding: 5px 10px;
-            line-height: 1em;
-            color: #000;
-            background-color: #FFFFFF;
-            outline: 0;
-            margin: 10px;
-            float: left;
-            cursor: pointer;
-            border-radius: 6px;
-        }
-        #selectChoicesDiv button:hover{
-            border: 2px #000 solid;
-        }
-
-        @media only screen and (min-width: 400px) and (max-width: 1024px) {
-            #treeDiv,#resultDiv{
-                width: 100%;
-            }
-
-        }
-
-    </style>
+</style>
 </head>
 
 <body>
@@ -219,6 +227,7 @@
     <div id="mask"></div>
     <div id="selectChoices">
         <h1>可选节点</h1>
+
         <div id="selectChoicesDiv"></div>
     </div>
     <div class="main">
@@ -229,8 +238,6 @@
                 <ul id="tree">
                 </ul>
             </div>
-
-
             <div id="resultDiv">
                 <h1>代码输出</h1>
                 <button id="getJson">获取json</button>
@@ -240,11 +247,10 @@
             </div>
         </div>
     </div>
-
-
     <div class="fixed">
         <div id="editDiv">
             <h1>编辑工具</h1>
+
             <div id="editChoices">
                 <h2>Add</h2>
                 <button id="addParentNode">添加父节点</button>
@@ -255,9 +261,7 @@
                 <button id="editNode">修改内容</button>
             </div>
         </div>
-
     </div>
-
 </div>
 
 <!--javascript-->
