@@ -19,6 +19,7 @@
             padding: 0;
             font-family: arial, verdana, sans-serif;
         }
+
         .wrap {
             width: 100%;
             height: 100%;
@@ -110,7 +111,7 @@
 
         }
 
-        #getJson, #addObjectNode, #addArrayNode,#addFileNode,#addLeafNode, #removeNode,
+        #getJson, #addObjectNode, #addArrayNode,#addFileNode,#addLeafNode,#addParentNode,#addChildNode, #removeNode,
         #editNode, #addFirstNodeButton {
             margin-bottom: 10px;
             color: #fff;
@@ -132,10 +133,10 @@
         #getJson {
             background-color: #34495E;
         }
-        #addObjectNode,#addArrayNode,#addFileNode,#addLeafNode {
+        #addObjectNode,#addArrayNode,#addFileNode,#addLeafNode,#addParentNode,#addChildNode {
             background-color: #2ECC71;
         }
-        #addObjectNode:hover,#addArrayNode:hover,#addFileNode:hover,#addLeafNode:hover {
+        #addObjectNode:hover,#addArrayNode:hover,#addFileNode:hover,#addLeafNode:hover,#addParentNode:hover,#addChildNode:hover{
             background-color: #58D68D;
         }
 
@@ -154,18 +155,40 @@
         #addFirstNodeButton {
             background-color: #3498DB;
         }
-        #selectChoices {
-            background-color: #ECF0F1;
-            width: 150px;
-            padding: 9px;
-            border: 1px #ccc solid;
-            height: auto;
-            float: left;
-            /*margin-top: 200px;*/
-            /*position: fixed;*/
-            /*bottom: 0;*/
+
+        #mask{
+            display: none;
+            position: absolute;
+            top:0;
+            left:0;
+            z-index:200;
+            height:100%;
+            width:100%;
+            background: #000000;
+            filter:alpha(opacity=30);
+            -moz-opacity:0.3;
+            opacity:0.3;
         }
-        #selectChoices button{
+
+        #selectChoices {
+            display: none;
+            position:absolute;
+            top:20%;
+            left:40%;
+            padding: 9px;
+            width: 300px;
+            z-index:201;
+            height: auto;
+            border: 3px #000 solid;
+            background-color: #ECF0F1;
+        }
+
+        #selectChoices h1{
+            border-bottom: 1px #ccc dashed;
+        }
+
+        #selectChoicesDiv button{
+            display: block;
             border: 2px #ccc solid;
             padding: 5px 10px;
             line-height: 1em;
@@ -177,7 +200,7 @@
             cursor: pointer;
             border-radius: 6px;
         }
-        #selectChoices button:hover{
+        #selectChoicesDiv button:hover{
             border: 2px #000 solid;
         }
 
@@ -193,6 +216,11 @@
 
 <body>
 <div class="wrap">
+    <div id="mask"></div>
+    <div id="selectChoices">
+        <h1>可选节点</h1>
+        <div id="selectChoicesDiv"></div>
+    </div>
     <div class="main">
         <div class="main-inner">
             <div id="treeDiv">
@@ -219,27 +247,18 @@
             <h1>编辑工具</h1>
             <div id="editChoices">
                 <h2>Add</h2>
-                <button id="addObjectNode">"key":{ }</button>
-                <button id="addArrayNode">"key":[ ]</button>
-                <button id="addFileNode">[ ] / " "</button>
-                <button id="addLeafNode">"key":"value"</button>
+                <button id="addParentNode">添加父节点</button>
+                <button id="addChildNode">添加子节点</button>
                 <h2>Delete</h2>
                 <button id="removeNode">删除节点</button>
                 <h2>Rename</h2>
                 <button id="editNode">修改内容</button>
-            </div>
-            <h1>可选节点</h1>
-            <div id="selectChoices">
-
             </div>
         </div>
 
     </div>
 
 </div>
-
-
-
 
 <!--javascript-->
 <script src="lib/functions.js"></script>
